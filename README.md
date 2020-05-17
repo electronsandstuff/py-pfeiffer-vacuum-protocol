@@ -16,7 +16,7 @@ To correctly do this, you'll need to make a quick custom cable for the device.  
 
 Cheap RS485 adapters exist that allow the gauge to be directly connected to a PC.  Currently, only functions relevant to the PPT 100 are implemented in the library.  The following is a table of compatibility for other models reproduced from the PPT 100 manual.  If you are interested in other gauges, then please consider contributing.
 
-![compatibility](assets/compatibility.png)
+![compatibility](assets/compatibility.PNG)
 
 ## Quickstart Guide
 
