@@ -12,12 +12,28 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+import io
+
 # Pulled from pySerial
 PARITY_NONE, PARITY_EVEN, PARITY_ODD, PARITY_MARK, PARITY_SPACE = 'N', 'E', 'O', 'M', 'S'
 STOPBITS_ONE, STOPBITS_ONE_POINT_FIVE, STOPBITS_TWO = (1, 1.5, 2)
 FIVEBITS, SIXBITS, SEVENBITS, EIGHTBITS = (5, 6, 7, 8)
 
-class Serial:
+def to_bytes(seq):
+    """convert a sequence to a bytes type"""
+    if isinstance(seq, bytes):
+        return seq
+    elif isinstance(seq, bytearray):
+        return bytes(seq)
+    elif isinstance(seq, memoryview):
+        return seq.tobytes()
+    elif isinstance(seq, str):
+        raise TypeError('unicode strings are not supported, please encode to bytes: {!r}'.format(seq))
+    else:
+        # handle list of integers and bytes (one or more items) for Python 2 and 3
+        return bytes(bytearray(seq))
+
+class Serial(io.RawIOBase):
     """\
     Mockup of a serial port named COM1 connected to a pfeiffer device
     """
@@ -31,6 +47,7 @@ class Serial:
     STOPBITS = (STOPBITS_ONE, STOPBITS_ONE_POINT_FIVE, STOPBITS_TWO)
 
     def __init__(self,
+                 connected_device,
                  port=None,
                  baudrate=9600,
                  bytesize=EIGHTBITS,
@@ -43,12 +60,44 @@ class Serial:
                  dsrdtr=False,
                  inter_byte_timeout=None,
                  exclusive=None,
-                 connected_device=None,
                  **kwargs):
         """\
         Initializes the com port object
         """
-    pass
+        self.buffer = b""
+        self.dev = connected_device
+        self.baudrate = baudrate
+
+    def flush(self):
+        self.buffer = b""
+
+    def write(self, output):
+        self.buffer += self.dev.get_response(to_bytes(output))
+        return len(output)
+
+    def read(self, readlen):
+        if(self.baudrate != 9600):
+            return b""
+
+        ret = self.buffer[:readlen]
+        self.buffer = self.buffer[readlen:]
+        return ret
+
+    def readinto(self, b):
+        data = self.read(len(b))
+        n = len(data)
+        b[:n] = data
+        return n
+
+    def readable(self):
+        return True
+
+    def writable(self):
+        return True
+
+    def seekable(self):
+        return False
+
 
 # Error states for vacuum gauges
 NO_ERROR, DEFECTIVE_TRANSMITTER, DEFECTIVE_MEMORY = (0, 1, 2)
@@ -67,19 +116,19 @@ class PPT100:
 
         # If it doesn't end in a carriage return, exit
         if(in_str[-1] != '\r'):
-            return None
+            return b""
 
         # Validate the checksum and exit if bad
         if(int(in_str[-4:-1]) != (sum([ord(x) for x in in_str[:-4]])%256)):
-            return None
+            return b""
 
         # Get the address, and exit if it isn't correct
         if(int(in_str[:3]) != 1):
-            return None
+            return b""
 
         # Get the data length and return if it's wrong
         if(len(in_str)-14 != int(in_str[8:10])):
-            return None
+            return b""
 
         # Get the operation type (read/write)
         op_type = int(in_str[3])
@@ -91,11 +140,11 @@ class PPT100:
         if(op_type == 0):
             # Check that the data length is right and exit if not
             if(int(in_str[8:10]) != 2):
-                return None
+                return b""
 
             # Check that the data is =? exit if it isn't
             if(in_str[10:12] != "=?"):
-                return None
+                return b""
 
             # If it is error code, return the right one
             if(param_num == 303):

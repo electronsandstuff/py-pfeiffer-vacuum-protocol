@@ -14,15 +14,48 @@
 
 import unittest
 import pfeiffer_vacuum_protocol.mock as mock
+import io
 
 class TestSerial(unittest.TestCase):
-    pass
+    def test_write(self):
+        s = mock.Serial(mock.PPT100(), "COM1")
+        r = s.write(b"test")
+        self.assertEqual(r, 4)
+
+    def test_wrong_type(self):
+        s = mock.Serial(mock.PPT100(), "COM1")
+        with self.assertRaises(TypeError) as context:
+            s.write("blah blah blah")
+
+    def test_read(self):
+        s = mock.Serial(mock.PPT100(), "COM1")
+        s.write(b"0010073902=?114\r")
+        r = s.read(1)
+        self.assertEqual(r, b"0")
+
+    def test_io_readline(self):
+        s = mock.Serial(mock.PPT100(), "COM1")
+        sio = io.TextIOWrapper(io.BufferedRWPair(s, s), newline="\r")
+        sio.write("0010073902=?114\r")
+        sio.flush()
+        r = sio.readline()
+        self.assertEqual(r, "0011073906NO_DEF198\r")
+
+    def test_wrong_baudrate(self):
+        s = mock.Serial(mock.PPT100(), "COM1", 19200)
+        s.write(b"0010073902=?114\r")
+        r = s.read(1)
+        self.assertEqual(r, b"")
+
+    def test_flush(self):
+        s = mock.Serial(mock.PPT100(), "COM1")
+        s.flush()
 
 class TestPPT100(unittest.TestCase):
     def test_no_cr(self):
         g = mock.PPT100()
         r = g.get_response(b"0010074002=?106")
-        self.assertEqual(r, None)
+        self.assertEqual(r, b"")
 
     def test_no_def(self):
         g = mock.PPT100()
@@ -32,12 +65,12 @@ class TestPPT100(unittest.TestCase):
     def test_no_device(self):
         g = mock.PPT100()
         r = g.get_response(b"0020074002=?107\r")
-        self.assertEqual(r, None)
+        self.assertEqual(r, b"")
 
     def test_bad_cs(self):
         g = mock.PPT100()
         r = g.get_response(b"0010074002=?107\r")
-        self.assertEqual(r, None)
+        self.assertEqual(r, b"")
 
     def test_actual_err_none(self):
         g = mock.PPT100()
@@ -100,7 +133,7 @@ class TestPPT100(unittest.TestCase):
     def test_wrong_datalen_read(self):
         g = mock.PPT100()
         r = g.get_response(b"0010074201=044\r")
-        self.assertEqual(r, None)
+        self.assertEqual(r, b"")
 
     def test_wrong_datalen_write(self):
         g = mock.PPT100()
@@ -110,14 +143,14 @@ class TestPPT100(unittest.TestCase):
     def test_wrong_data_read(self):
         g = mock.PPT100()
         r = g.get_response(b"00100742021?096\r")
-        self.assertEqual(r, None)
+        self.assertEqual(r, b"")
         r = g.get_response(b"0010074201=?107\r")
-        self.assertEqual(r, None)
+        self.assertEqual(r, b"")
 
     def test_wrong_data_write(self):
         g = mock.PPT100()
         r = g.get_response(b"0011074206000133\r")
-        self.assertEqual(r, None)
+        self.assertEqual(r, b"")
 
 if __name__ == '__main__':
     unittest.main()
