@@ -16,7 +16,7 @@ import setuptools
 
 setuptools.setup(
         name='pfeiffer-vacuum-protocol',
-        version='0.1',
+        version='0.2',
         description=' Python interface to Pfeiffer vacuum gauges',
         author='Christopher M. Pierce',
         author_email='contact@chris-pierce.com',
