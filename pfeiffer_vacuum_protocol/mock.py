@@ -13,6 +13,7 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import io
+from enum import Enum
 
 # Pulled from pySerial
 PARITY_NONE, PARITY_EVEN, PARITY_ODD, PARITY_MARK, PARITY_SPACE = 'N', 'E', 'O', 'M', 'S'
@@ -100,13 +101,16 @@ class Serial(io.RawIOBase):
 
 
 # Error states for vacuum gauges
-NO_ERROR, DEFECTIVE_TRANSMITTER, DEFECTIVE_MEMORY = (0, 1, 2)
+class ErrorCode(Enum):
+    NO_ERROR = 1
+    DEFECTIVE_TRANSMITTER = 2
+    DEFECTIVE_MEMORY = 3
 
 class PPT100:
     """\
     Mockup of the Pfeiffer vacuum gauge model PPT 100
     """
-    def __init__(self, address=1, err_state=NO_ERROR):
+    def __init__(self, address=1, err_state=ErrorCode.NO_ERROR):
         self.address = address
         self.err_state = err_state
 
@@ -148,13 +152,13 @@ class PPT100:
 
             # If it is error code, return the right one
             if(param_num == 303):
-                if(self.err_state == NO_ERROR):
+                if(self.err_state == ErrorCode.NO_ERROR):
                     return b'0011030306000000014\r'
 
-                elif(self.err_state == DEFECTIVE_TRANSMITTER):
+                elif(self.err_state == ErrorCode.DEFECTIVE_TRANSMITTER):
                     return b'0011030306Err001168\r'
 
-                elif(self.err_state == DEFECTIVE_MEMORY):
+                elif(self.err_state == ErrorCode.DEFECTIVE_MEMORY):
                     return b'0011030306Err002169\r'
 
                 else:
