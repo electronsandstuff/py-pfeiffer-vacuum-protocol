@@ -60,6 +60,14 @@ def _read_gauge_response(s):
     param_num = int(r[5:8])
     data      =  r[10:-4]
 
+    # Check for errors
+    if(data == "NO_DEF"):
+        raise ValueError("undefined parameter number")
+    if(data == "_RANGE"):
+        raise ValueError("data is out of range")
+    if(data == "_LOGIC"):
+        raise ValueError("logic access violation")
+
     # Return it
     return addr, rw, param_num, data
 
