@@ -2,7 +2,21 @@
 
 A python interface for controlling Pfeiffer vacuum gauges over RS485.
 
+## Installation, Testing, and Dependencies
+This library is available on pip.  Please install it with the following command.
+```
+pip install pfeiffer-vacuum-protocol
+```
+Testing is done with python's unit testing framework.  You can verify the current branch is working with the following command.
+```
+[cmpierce@turing dist]$ python -m unittest pfeiffer_vacuum_protocol.tests
+...............................
+----------------------------------------------------------------------
+Ran 31 tests in 0.006s
 
+OK
+```
+The only required dependency is your favourite serial library.  This package was developed and tested against `pySerial`.  However, it should be compatible with any library that implements python's IO interface.
 
 ## Description and Hardware Compatibility
 
