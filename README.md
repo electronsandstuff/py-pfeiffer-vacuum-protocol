@@ -2,7 +2,7 @@
 
 A python interface for controlling Pfeiffer vacuum gauges over RS485.
 
-
+[![Build Status](https://travis-ci.com/electronsandstuff/BeLinear.svg?branch=master)](https://travis-ci.com/electronsandstuff/BeLinear)
 
 ## Description and Hardware Compatibility
 
