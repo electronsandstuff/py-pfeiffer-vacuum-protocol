@@ -22,15 +22,15 @@ The only required dependency is your favourite serial library.  This package was
 
 This library was created to communicate with a Pfeiffer vacuum PPT 100 over its RS485 interface.  These gauges can be purchased cheaply from ebay and this library enables simple readout of pressure from the gauges through python.
 
-![gauge](assets/gauge.jpg)
+![gauge](https://raw.githubusercontent.com/electronsandstuff/py-pfeiffer-vacuum-protocol/master/assets/gauge.jpg)
 
 To correctly do this, you'll need to make a quick custom cable for the device.  Please follow the pinout in the PPT 100 manual reproduced here.  On this particular gauge, V DC is 24 V.
 
-![pinout](assets/pinout.png)
+![pinout](https://raw.githubusercontent.com/electronsandstuff/py-pfeiffer-vacuum-protocol/master/assets/pinout.png)
 
 Cheap RS485 adapters exist that allow the gauge to be directly connected to a PC.  Currently, only functions relevant to the PPT 100 are implemented in the library.  The following is a table of compatibility for other models reproduced from the PPT 100 manual.  If you are interested in other gauges, then please consider contributing.
 
-![compatibility](assets/compatibility.PNG)
+![compatibility](https://raw.githubusercontent.com/electronsandstuff/py-pfeiffer-vacuum-protocol/master/assets/compatibility.PNG)
 
 ## Quickstart Guide
 The library is designed for and tested against the `pySerial` interface for communicating with the gauges.  However, because it can technically be used with any serial interface that implements python's IO interface, I have decided against imposing which library to use in the dependencies of this project.  To use pySerial as in this example, please installit through pip with `pip install pySerial`.
