@@ -19,6 +19,7 @@ Cheap RS485 adapters exist that allow the gauge to be directly connected to a PC
 ![compatibility](assets/compatibility.PNG)
 
 ## Quickstart Guide
+The library is designed for and tested against the `pySerial` interface for communicating with the gauges.  However, because it can technically be used with any serial interface that implements python's IO interface, I have decided against imposing which library to use in the dependencies of this project.  To use pySerial as in this example, please installit through pip with `pip install pySerial`.
 
 The most common operation is to read out pressure from the gauge.  The following example will read out pressure from a gauge attached to COM port 1 with address 1 on the RS485 network.  The pressure returned will be in bar.
 

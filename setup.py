@@ -23,9 +23,7 @@ setuptools.setup(
         python_requires='>=3.5',
         packages=setuptools.find_packages(),
         long_description_content_type="text/markdown",
-        install_requires = [
-            'pyserial',
-        ],
+        install_requires = [],
         license = "GNU Lesser General Public License v3 (LGPLv3)",
         classifiers = [
             "Programming Language :: Python :: 3",
