@@ -14,6 +14,7 @@
 
 import unittest
 import pfeiffer_vacuum_protocol.mock as mock
+from pfeiffer_vacuum_protocol import ErrorCode
 import io
 
 class TestSerial(unittest.TestCase):
@@ -78,12 +79,12 @@ class TestPPT100(unittest.TestCase):
         self.assertEqual(r, b'0011030306000000014\r')
 
     def test_actual_err_trans(self):
-        g = mock.PPT100(err_state=mock.ErrorCode.DEFECTIVE_TRANSMITTER)
+        g = mock.PPT100(err_state=ErrorCode.DEFECTIVE_TRANSMITTER)
         r = g.get_response(b"0010030302=?101\r")
         self.assertEqual(r, b'0011030306Err001168\r')
 
     def test_actual_err_mem(self):
-        g = mock.PPT100(err_state=mock.ErrorCode.DEFECTIVE_MEMORY)
+        g = mock.PPT100(err_state=ErrorCode.DEFECTIVE_MEMORY)
         r = g.get_response(b"0010030302=?101\r")
         self.assertEqual(r, b'0011030306Err002169\r')
 

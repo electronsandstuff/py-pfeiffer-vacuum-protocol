@@ -13,7 +13,7 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import io
-from enum import Enum
+from .pfeiffer_vacuum_protocol import ErrorCode
 
 # Pulled from pySerial
 PARITY_NONE, PARITY_EVEN, PARITY_ODD, PARITY_MARK, PARITY_SPACE = 'N', 'E', 'O', 'M', 'S'
@@ -98,13 +98,6 @@ class Serial(io.RawIOBase):
 
     def seekable(self):
         return False
-
-
-# Error states for vacuum gauges
-class ErrorCode(Enum):
-    NO_ERROR = 1
-    DEFECTIVE_TRANSMITTER = 2
-    DEFECTIVE_MEMORY = 3
 
 class PPT100:
     """\

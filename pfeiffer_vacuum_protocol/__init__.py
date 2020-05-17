@@ -1,1 +1,1 @@
-from pfeiffer_vacuum_protocol import *
+from .pfeiffer_vacuum_protocol import *
