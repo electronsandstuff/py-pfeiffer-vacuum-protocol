@@ -20,7 +20,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
         name='pfeiffer-vacuum-protocol',
-        version='0.2',
+        version='0.3',
         description=' Python interface to Pfeiffer vacuum gauges',
         author='Christopher M. Pierce',
         author_email='contact@chris-pierce.com',
