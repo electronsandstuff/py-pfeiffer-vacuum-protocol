@@ -72,4 +72,5 @@ jobs:
 env:
   global:
     - TWINE_USERNAME=__token__
+    - CIBW_BEFORE_BUILD="pip install --upgrade certifi"
     - CIBW_SKIP="cp27-* pp27-*"
