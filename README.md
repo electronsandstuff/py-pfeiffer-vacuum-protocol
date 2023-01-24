@@ -185,3 +185,11 @@ Sets the correction value on the gauge.  Used to adjust the pressure measurement
 ###### Returns
 
 * None
+
+##### enable_valid_char_filter()
+
+Globally enable a filter to ignore invalid characters coming from the serial device.
+
+##### disable_valid_char_filter()
+
+Globally disable a filter to ignore invalid characters coming from the serial device.

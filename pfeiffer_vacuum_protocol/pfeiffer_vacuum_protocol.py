@@ -10,11 +10,19 @@ _filter_invalid_char = False
 
 
 def enable_valid_char_filter():
+    """
+    Globally enable a filter to ignore invalid characters coming from the serial device.
+    :return:
+    """
     global _filter_invalid_char
     _filter_invalid_char = True
 
 
 def disable_valid_char_filter():
+    """
+    Globally disable a filter to ignore invalid characters coming from the serial device.
+    :return:
+    """
     global _filter_invalid_char
     _filter_invalid_char = False
 
@@ -93,6 +101,18 @@ def _read_gauge_response(s, valid_char_filter=None):
 
 
 def read_error_code(s, addr, valid_char_filter=None):
+    """
+    Reads Pfeiffer's low level error code on the gauge.  This appears to be useful for diagnosing failure of the transmitter itself.
+
+    :param s: The open serial object pointing to an adapter attached to the gauge.
+    :param addr: The address of the gauge.
+    :type addr: int
+    :param valid_char_filter: Manually override the valid character filter.
+    :type valid_char_filter: bool/None
+
+    :returns: The error code returned by the gauge, this can be one of `NO_ERROR`, `DEFECTIVE_TRANSMITTER`, or `DEFECTIVE_MEMORY`
+    :rtype: pfeiffer_vacuum_protocol.ErrorCode enum element
+    """
     _send_data_request(s, addr, 303)
     raddr, rw, rparam_num, rdata = _read_gauge_response(s, valid_char_filter=valid_char_filter)
 
@@ -110,6 +130,17 @@ def read_error_code(s, addr, valid_char_filter=None):
 
 
 def read_software_version(s, addr, valid_char_filter=None):
+    """
+    Returns the vacuum gauge's firmware version.
+
+    :param s: The open serial device attached to the gauge.
+    :param addr: The address of the gauge.
+    :type addr: int
+    :param valid_char_filter: Manually override the valid character filter.
+    :type valid_char_filter: bool/None
+
+    :returns: The version numbers as the tuple (major, minor, sub-minor)
+    """
     _send_data_request(s, addr, 312)
     raddr, rw, rparam_num, rdata = _read_gauge_response(s, valid_char_filter=valid_char_filter)
 
@@ -120,6 +151,18 @@ def read_software_version(s, addr, valid_char_filter=None):
 
 
 def read_gauge_type(s, addr, valid_char_filter=None):
+    """
+    Returns the name of the vacuum gauge attached at this address.
+
+    :param s: The open serial device attached to the gauge.
+    :param addr: The address of the gauge.
+    :type addr: int
+    :param valid_char_filter: Manually override the valid character filter.
+    :type valid_char_filter: bool/None
+
+    :returns: The model name of the gauge attached
+    :rtype: str
+    """
     _send_data_request(s, addr, 349)
     raddr, rw, rparam_num, rdata = _read_gauge_response(s, valid_char_filter=valid_char_filter)
 
@@ -141,6 +184,18 @@ def read_gauge_type(s, addr, valid_char_filter=None):
 
 
 def read_pressure(s, addr, valid_char_filter=None):
+    """
+    Reads the pressure from the gauge and returns it in bars.
+
+    :param s: The open serial device attached to the gauge.
+    :param addr: The address of the gauge.
+    :type addr: int
+    :param valid_char_filter: Manually override the valid character filter.
+    :type valid_char_filter: bool/None
+
+    :returns: Pressure measured by gauge in bars
+    :rtype: float
+    """
     _send_data_request(s, addr, 740)
     raddr, rw, rparam_num, rdata = _read_gauge_response(s, valid_char_filter=valid_char_filter)
 
@@ -154,6 +209,19 @@ def read_pressure(s, addr, valid_char_filter=None):
 
 
 def write_pressure_setpoint(s, addr, val, valid_char_filter=None):
+    """
+    Sets the gauge's "vacuum setpoint".  In the manual, this appears to tell the gauge if it's operating in a high or low pressure regime to change some of its signal processing.
+
+    :param s: The open serial device attached to the gauge.
+    :param addr: The address of the gauge.
+    :type addr: int
+    :param valid_char_filter: Manually override the valid character filter.
+    :type valid_char_filter: bool/None
+    :param val: Manually override the valid character filter.
+    :type val: The setpoint
+    :returns: None
+    :rtype: None
+    """
     # Format the data
     data = "{:03d}".format(val)
     _send_control_command(s, addr, 741, data)
@@ -168,6 +236,17 @@ def write_pressure_setpoint(s, addr, val, valid_char_filter=None):
 
 
 def read_correction_value(s, addr, valid_char_filter=None):
+    """
+    Returns the current correction value used to adjust pressure measurements for different gas compositions.
+
+    :param s: The open serial device attached to the gauge.
+    :param addr: The address of the gauge.
+    :type addr: int
+    :param valid_char_filter: Manually override the valid character filter.
+    :type valid_char_filter: bool/None
+
+    :returns: The current correction value
+    """
     _send_data_request(s, addr, 742)
     raddr, rw, rparam_num, rdata = _read_gauge_response(s, valid_char_filter=valid_char_filter)
 
@@ -178,6 +257,19 @@ def read_correction_value(s, addr, valid_char_filter=None):
 
 
 def write_correction_value(s, addr, val, valid_char_filter=None):
+    """
+    Sets the correction value on the gauge.  Used to adjust the pressure measurement for different gas compositions.
+
+    :param s: The open serial device attached to the gauge.
+    :param addr: The address of the gauge.
+    :type addr: int
+    :param valid_char_filter: Manually override the valid character filter.
+    :type valid_char_filter: bool/None
+    :param val: The value it will be set to
+    :type val: float
+    :returns: None
+    :rtype: None
+    """
     # Format the data
     data = "{:06d}".format(int(val * 100))
     _send_control_command(s, addr, 742, data)
