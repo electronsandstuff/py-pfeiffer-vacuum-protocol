@@ -79,5 +79,23 @@ class TestNonAsciiFnOverride(BaseTestCases.TestCommon):
         pvp.disable_valid_char_filter()
 
 
+# Confirm errors are handled correctly
+class NonAsciiErrorChecks(unittest.TestCase):
+    def test_read_pressure(self):
+        pvp.enable_valid_char_filter()
+        s = mock.Serial(mock.PPT100(nonascii=True), "COM1")
+        self.assertEqual(pvp.read_pressure(s, 1, valid_char_filter=None), 1.0)
+
+        pvp.disable_valid_char_filter()
+        with self.assertRaises(pvp.InvalidCharError):
+            r = pvp.read_pressure(s, 1, valid_char_filter=None)
+
+        self.assertEqual(pvp.read_pressure(s, 1, valid_char_filter=True), 1.0)
+
+        pvp.enable_valid_char_filter()
+        with self.assertRaises(pvp.InvalidCharError):
+            r = pvp.read_pressure(s, 1, valid_char_filter=False)
+
+
 if __name__ == '__main__':
     unittest.main()
