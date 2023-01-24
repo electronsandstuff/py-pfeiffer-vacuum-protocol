@@ -93,11 +93,12 @@ class PPT100:
     Mockup of the Pfeiffer vacuum gauge model PPT 100
     """
 
-    def __init__(self, address=1, err_state=ErrorCode.NO_ERROR):
+    def __init__(self, address=1, err_state=ErrorCode.NO_ERROR, nonascii=False):
         self.address = address
         self.err_state = err_state
+        self.nonascii = nonascii  # Include array of  \xff before message (github issue 1)
 
-    def get_response(self, bin_str):
+    def _get_response(self, bin_str):
         # Convert to a unicode str
         in_str = bin_str.decode("ascii")
 
@@ -197,3 +198,12 @@ class PPT100:
             # If it wasn't a valid parameter, return an error
             else:
                 return b'0011074206NO_DEF192\r'
+
+    def get_response(self, bin_str):
+        """
+        Wrap the get response function to optionally add chars before/after
+        """
+        r = self._get_response(bin_str)
+        if self.nonascii:
+            r = b'\xff'*40 + r
+        return r
