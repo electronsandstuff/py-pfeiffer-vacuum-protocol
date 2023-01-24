@@ -6,6 +6,9 @@ import pfeiffer_vacuum_protocol as pvp
 # Suggested from https://stackoverflow.com/questions/1323455/python-unit-test-with-base-and-sub-class
 class BaseTestCases:
     class TestCommon(unittest.TestCase):
+        def setUp(self) -> None:
+            self.nonascii = False
+
         def test_read_error_code(self):
             s = mock.Serial(mock.PPT100(nonascii=self.nonascii), "COM1")
             r = pvp.read_error_code(s, 1)
