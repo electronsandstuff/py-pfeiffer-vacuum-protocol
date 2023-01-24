@@ -1,21 +1,8 @@
-# pfeiffer_vacuum_protocol - Python interface to Pfeiffer vacuum gauges
-# Copyright (C) 2020 Christopher M. Pierce (contact@chris-pierce.com)
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of version 3 of the GNU Lesser General Public
-# License as published by the Free Software Foundation.
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# Lesser General Public License for more details.
-# You should have received a copy of the GNU Lesser General Public License
-# along with this program; if not, write to the Free Software Foundation,
-# Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
 import unittest
 import pfeiffer_vacuum_protocol.mock as mock
 from pfeiffer_vacuum_protocol import ErrorCode
 import io
+
 
 class TestSerial(unittest.TestCase):
     def test_write(self):
@@ -25,7 +12,7 @@ class TestSerial(unittest.TestCase):
 
     def test_wrong_type(self):
         s = mock.Serial(mock.PPT100(), "COM1")
-        with self.assertRaises(TypeError) as context:
+        with self.assertRaises(TypeError):
             s.write("blah blah blah")
 
     def test_read(self):
@@ -52,7 +39,13 @@ class TestSerial(unittest.TestCase):
         s = mock.Serial(mock.PPT100(), "COM1")
         s.flush()
 
+
 class TestPPT100(unittest.TestCase):
+    def test_nonascii(self):
+        g = mock.PPT100(nonascii=True)
+        r = g.get_response(b"0010030302=?101\r")
+        self.assertEqual(r[:40], b'\xff'*40)
+
     def test_no_cr(self):
         g = mock.PPT100()
         r = g.get_response(b"0010074002=?106")
@@ -91,7 +84,7 @@ class TestPPT100(unittest.TestCase):
     def test_software_vers(self):
         g = mock.PPT100()
         r = g.get_response(b"0010031202=?101\r")
-        self.assertEqual(r, b'0011031206010100016\r' )
+        self.assertEqual(r, b'0011031206010100016\r')
 
     def test_component_name(self):
         g = mock.PPT100()
@@ -101,7 +94,7 @@ class TestPPT100(unittest.TestCase):
     def test_pressure_in(self):
         g = mock.PPT100()
         r = g.get_response(b"0010074002=?106\r")
-        self.assertEqual(r, b'0011074006100023025\r' )
+        self.assertEqual(r, b'0011074006100023025\r')
 
     def test_pressure_setpoint(self):
         g = mock.PPT100()
@@ -129,7 +122,7 @@ class TestPPT100(unittest.TestCase):
     def test_pirani_correction_read(self):
         g = mock.PPT100()
         r = g.get_response(b"0010074202=?108\r")
-        self.assertEqual(r, b'0011074206000100022\r' )
+        self.assertEqual(r, b'0011074206000100022\r')
 
     def test_wrong_datalen_read(self):
         g = mock.PPT100()
@@ -139,7 +132,7 @@ class TestPPT100(unittest.TestCase):
     def test_wrong_datalen_write(self):
         g = mock.PPT100()
         r = g.get_response(b"0011074203100131\r")
-        self.assertEqual(r, b'0011074206NO_DEF192\r' )
+        self.assertEqual(r, b'0011074206NO_DEF192\r')
 
     def test_wrong_data_read(self):
         g = mock.PPT100()
@@ -152,6 +145,7 @@ class TestPPT100(unittest.TestCase):
         g = mock.PPT100()
         r = g.get_response(b"0011074206000133\r")
         self.assertEqual(r, b"")
+
 
 if __name__ == '__main__':
     unittest.main()
