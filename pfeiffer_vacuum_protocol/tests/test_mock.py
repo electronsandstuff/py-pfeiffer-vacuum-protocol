@@ -41,6 +41,11 @@ class TestSerial(unittest.TestCase):
 
 
 class TestPPT100(unittest.TestCase):
+    def test_nonascii(self):
+        g = mock.PPT100(nonascii=True)
+        r = g.get_response(b"0010030302=?101\r")
+        self.assertEqual(r[:40], b'\xff'*40)
+
     def test_no_cr(self):
         g = mock.PPT100()
         r = g.get_response(b"0010074002=?106")
