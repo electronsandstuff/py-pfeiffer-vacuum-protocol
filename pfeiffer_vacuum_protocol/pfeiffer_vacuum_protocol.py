@@ -1,6 +1,24 @@
 from enum import Enum
 
 
+class InvalidCharError(Exception):  # Custom exception when failing on invalid chars
+    pass
+
+
+# Control non-ascii char filtering
+_filter_invalid_char = False
+
+
+def enable_valid_char_filter():
+    global _filter_invalid_char
+    _filter_invalid_char = True
+
+
+def disable_valid_char_filter():
+    global _filter_invalid_char
+    _filter_invalid_char = False
+
+
 # Error states for vacuum gauges
 class ErrorCode(Enum):
     NO_ERROR = 1
@@ -20,14 +38,27 @@ def _send_control_command(s, addr, param_num, data_str):
     return s.write(c.encode())
 
 
-def _read_gauge_response(s):
+def _read_gauge_response(s, valid_char_filter=None):
+    if valid_char_filter is None:
+        valid_char_filter = _filter_invalid_char
+
     # Read until newline or we stop getting a response
     r = ""
     for _ in range(64):
         c = s.read(1)
+
         if c == b"":
             break
-        r += c.decode("ascii")
+
+        try:
+            r += c.decode("ascii")
+        except UnicodeDecodeError:
+            if valid_char_filter:
+                continue
+            raise InvalidCharError("Cannot decode character. This issue may sometimes be resolved by ignoring invalid "
+                                   "characters. Enable the filter globally by running the function "
+                                   "`pfeiffer_vacuum_protocol.enable_valid_char_filter()` after the import statement.")
+
         if c == b"\r":
             break
 
@@ -61,9 +92,9 @@ def _read_gauge_response(s):
     return addr, rw, param_num, data
 
 
-def read_error_code(s, addr):
+def read_error_code(s, addr, valid_char_filter=None):
     _send_data_request(s, addr, 303)
-    raddr, rw, rparam_num, rdata = _read_gauge_response(s)
+    raddr, rw, rparam_num, rdata = _read_gauge_response(s, valid_char_filter=valid_char_filter)
 
     if raddr != addr or rw != 1 or rparam_num != 303:
         raise ValueError("invalid response from gauge")
@@ -78,9 +109,9 @@ def read_error_code(s, addr):
         raise ValueError("unexpected error code from gauge")
 
 
-def read_software_version(s, addr):
+def read_software_version(s, addr, valid_char_filter=None):
     _send_data_request(s, addr, 312)
-    raddr, rw, rparam_num, rdata = _read_gauge_response(s)
+    raddr, rw, rparam_num, rdata = _read_gauge_response(s, valid_char_filter=valid_char_filter)
 
     if raddr != addr or rw != 1 or rparam_num != 312:
         raise ValueError("invalid response from gauge")
@@ -88,9 +119,9 @@ def read_software_version(s, addr):
     return int(rdata[0:2]), int(rdata[2:4]), int(rdata[4:])
 
 
-def read_gauge_type(s, addr):
+def read_gauge_type(s, addr, valid_char_filter=None):
     _send_data_request(s, addr, 349)
-    raddr, rw, rparam_num, rdata = _read_gauge_response(s)
+    raddr, rw, rparam_num, rdata = _read_gauge_response(s, valid_char_filter=valid_char_filter)
 
     if raddr != addr or rw != 1 or rparam_num != 349:
         raise ValueError("invalid response from gauge")
@@ -109,9 +140,9 @@ def read_gauge_type(s, addr):
         raise ValueError("unrecognized gauge type")
 
 
-def read_pressure(s, addr):
+def read_pressure(s, addr, valid_char_filter=None):
     _send_data_request(s, addr, 740)
-    raddr, rw, rparam_num, rdata = _read_gauge_response(s)
+    raddr, rw, rparam_num, rdata = _read_gauge_response(s, valid_char_filter=valid_char_filter)
 
     if raddr != addr or rw != 1 or rparam_num != 740:
         raise ValueError("invalid response from gauge")
@@ -122,11 +153,11 @@ def read_pressure(s, addr):
     return float(mantissa * 10 ** (exponent - 26))
 
 
-def write_pressure_setpoint(s, addr, val):
+def write_pressure_setpoint(s, addr, val, valid_char_filter=None):
     # Format the data
     data = "{:03d}".format(val)
     _send_control_command(s, addr, 741, data)
-    raddr, rw, rparam_num, rdata = _read_gauge_response(s)
+    raddr, rw, rparam_num, rdata = _read_gauge_response(s, valid_char_filter=valid_char_filter)
 
     # Check the response
     if raddr != addr or rw != 1 or rparam_num != 741:
@@ -136,9 +167,9 @@ def write_pressure_setpoint(s, addr, val):
         raise ValueError("invalid acknowledgment from gauge")
 
 
-def read_correction_value(s, addr):
+def read_correction_value(s, addr, valid_char_filter=None):
     _send_data_request(s, addr, 742)
-    raddr, rw, rparam_num, rdata = _read_gauge_response(s)
+    raddr, rw, rparam_num, rdata = _read_gauge_response(s, valid_char_filter=valid_char_filter)
 
     if raddr != addr or rw != 1 or rparam_num != 742:
         raise ValueError("invalid response from gauge")
@@ -146,11 +177,11 @@ def read_correction_value(s, addr):
     return float(rdata) / 100
 
 
-def write_correction_value(s, addr, val):
+def write_correction_value(s, addr, val, valid_char_filter=None):
     # Format the data
     data = "{:06d}".format(int(val * 100))
     _send_control_command(s, addr, 742, data)
-    raddr, rw, rparam_num, rdata = _read_gauge_response(s)
+    raddr, rw, rparam_num, rdata = _read_gauge_response(s, valid_char_filter=valid_char_filter)
 
     # Check the response
     if raddr != addr or rw != 1 or rparam_num != 742:
