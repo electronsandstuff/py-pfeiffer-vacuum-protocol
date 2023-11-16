@@ -1,8 +1,10 @@
 # Pfeiffer Vacuum Protocol
+[![](https://img.shields.io/pypi/v/pfeiffer-vacuum-protocol.svg)](https://pypi.org/pypi/pfeiffer-vacuum-protocol/)
+[![](https://img.shields.io/pypi/pyversions/pfeiffer-vacuum-protocol.svg)](https://pypi.org/pypi/pfeiffer-vacuum-protocol/)
+[![](https://img.shields.io/pypi/l/pfeiffer-vacuum-protocol.svg)](https://pypi.org/pypi/pfeiffer-vacuum-protocol/)
+[![](https://img.shields.io/pypi/l/pfeiffer-vacuum-protocol.svg)](https://pypi.org/pypi/pfeiffer-vacuum-protocol/)
 
 A python interface for controlling Pfeiffer vacuum gauges over RS485.
-
-[![Build Status](https://travis-ci.com/electronsandstuff/BeLinear.svg?branch=master)](https://travis-ci.com/electronsandstuff/BeLinear)
 
 ## Installation, Testing, and Dependencies
 This library is available on pip.  Please install it with the following command.
