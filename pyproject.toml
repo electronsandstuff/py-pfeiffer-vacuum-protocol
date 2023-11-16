@@ -1,6 +1,6 @@
 [project]
 name = "pfeiffer-vacuum-protocol"
-version = "0.6"
+version = "1.0"
 authors = [
   { name="Christopher M. Pierce", email="contact@chris-pierce.com" },
 ]
