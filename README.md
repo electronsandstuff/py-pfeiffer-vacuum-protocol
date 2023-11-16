@@ -2,7 +2,6 @@
 [![](https://img.shields.io/pypi/v/pfeiffer-vacuum-protocol.svg)](https://pypi.org/pypi/pfeiffer-vacuum-protocol/)
 [![](https://img.shields.io/pypi/pyversions/pfeiffer-vacuum-protocol.svg)](https://pypi.org/pypi/pfeiffer-vacuum-protocol/)
 [![](https://img.shields.io/pypi/l/pfeiffer-vacuum-protocol.svg)](https://pypi.org/pypi/pfeiffer-vacuum-protocol/)
-[![](https://img.shields.io/pypi/l/pfeiffer-vacuum-protocol.svg)](https://pypi.org/pypi/pfeiffer-vacuum-protocol/)
 
 A python interface for controlling Pfeiffer vacuum gauges over RS485.
 
