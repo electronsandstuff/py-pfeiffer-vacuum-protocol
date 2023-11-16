@@ -1,0 +1,16 @@
+[project]
+name = "pfeiffer-vacuum-protocol"
+version = "1.0"
+authors = [
+  { name="Christopher M. Pierce", email="contact@chris-pierce.com" },
+]
+description = "Python interface to Pfeiffer vacuum gauges"
+readme = "README.md"
+requires-python = ">=3.6"
+license = {file = "LICENSE.txt"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: BSD License",
+]
+dependencies = []
