@@ -10,9 +10,9 @@ This library is available on pip.  Please install it with the following command.
 ```
 pip install pfeiffer-vacuum-protocol
 ```
-Testing is done with python's unit testing framework.  You can verify the current branch is working with the following command.
+Testing is done with python's unit testing framework.  You can verify the current branch is working with the following command run from the root of this repo.
 ```
-[cmpierce@turing dist]$ python -m unittest pfeiffer_vacuum_protocol.tests
+[cmpierce@turing dist]$ python -m unittest
 ...............................
 ----------------------------------------------------------------------
 Ran 31 tests in 0.006s
