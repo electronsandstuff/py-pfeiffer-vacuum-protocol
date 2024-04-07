@@ -22,17 +22,15 @@ OK
 The only required dependency is your favorite serial library.  This package was developed and tested against `pySerial`.  However, it should be compatible with any library that implements python's IO interface.
 ## Description and Hardware Compatibility
 
-This library was created to communicate with a Pfeiffer vacuum PPT 100 over its RS485 interface.  These gauges can be purchased cheaply from ebay and this library enables simple readout of pressure from the gauges through python.
+This library was created to communicate with a Pfeiffer vacuum gauges over their RS485 interfaces. Most Pfeiffer gauges that have a RS485 interface will be able to communicate using this library. The folloing gauges have been tested with this protocol:
+ 
+ - PPT 100: Can be purchased cheaply from ebay.
+ - PKR series guages: More expensive and must be used with a controller like the Omnicontrol/DCU 001/100/200/300. These controllers convert the analog out of the gauge to the RS485 interface and can control pumps.
+ - MPT series gauges: More expensive and do not need an attached controller.
 
-![gauge](https://raw.githubusercontent.com/electronsandstuff/py-pfeiffer-vacuum-protocol/master/assets/gauge.jpg)
+This library enables simple readout of pressure from the gauges through python.
 
-To correctly do this, you'll need to make a quick custom cable for the device.  Please follow the pinout in the PPT 100 manual reproduced here.  On this particular gauge, V DC is 24 V.
-
-![pinout](https://raw.githubusercontent.com/electronsandstuff/py-pfeiffer-vacuum-protocol/master/assets/pinout.png)
-
-Cheap RS485 adapters exist that allow the gauge to be directly connected to a PC.  Currently, only functions relevant to the PPT 100 are implemented in the library.  The following is a table of compatibility for other models reproduced from the PPT 100 manual.  If you are interested in other gauges, then please consider contributing.
-
-![compatibility](https://raw.githubusercontent.com/electronsandstuff/py-pfeiffer-vacuum-protocol/master/assets/compatibility.PNG)
+To interface with these gauges, each guage configuration will have a different electrical setup. The [devices](devices.md) page goes into more detail on how to set things up for your device.
 
 ## Quickstart Guide
 The library is designed for and tested against the `pySerial` interface for communicating with the gauges.  However, because it can technically be used with any serial interface that implements python's IO interface, I have decided against imposing which library to use in the dependencies of this project.  To use pySerial as in this example, please installit through pip with `pip install pySerial`.
