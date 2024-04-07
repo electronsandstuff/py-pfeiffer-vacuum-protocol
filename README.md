@@ -49,6 +49,8 @@ p = pvp.read_pressure(s, 1)
 print("Pressure: {:.3f} bar".format(p))
 ```
 
+When connecting to a PPT 100 gauge, the default address of the device is 1, but on an Omnicontrol controller connected to a PKR type gauge, the address would be 122 or 132. More information is available in the user manuals for your device of choice. 
+
 ## Invalid Character Filter
 Some users have reported invalid characters coming from their serial device. Sometimes this can be resolved by simply ignoring those extra characters. The library comes with a filter built in. This is kept off by default to properly display errors to the user. However, it can be enabled/disabled by running one of the following function after import.
 ```python
@@ -192,3 +194,10 @@ Globally enable a filter to ignore invalid characters coming from the serial dev
 ##### disable_valid_char_filter()
 
 Globally disable a filter to ignore invalid characters coming from the serial device.
+
+## Ongoing work
+
+ - Expand compatibility of library to communicating with all Pfeiffer RS485 devices including controllers, turbo pumps, roughing pumps, and gauges.
+ - Add in scan devices tool to get all the types and addresses of the devices in a multi-device pfeiffer network.
+ - Support more advanced parameters for pressure gauges and pumps.
+ - Add in capability of commanding gauges and pumps.
