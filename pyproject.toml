@@ -14,3 +14,8 @@ classifiers = [
     "License :: OSI Approved :: BSD License",
 ]
 dependencies = []
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+target-version = "py312"
