@@ -42,7 +42,7 @@ class BaseTestCases:
             s = mock.Serial(mock.PPT100(nonascii=self.nonascii), "COM1")
             pvp.write_pressure_setpoint(s, 1, 0, valid_char_filter=self.ascii_filter)
             pvp.write_pressure_setpoint(s, 1, 1, valid_char_filter=self.ascii_filter)
-            with self.assertRaises(ValueError) as context:
+            with self.assertRaises(ValueError):
                 pvp.write_pressure_setpoint(s, 1, 2, valid_char_filter=self.ascii_filter)
 
         def test_read_correction_value(self):
@@ -88,14 +88,14 @@ class NonAsciiErrorChecks(unittest.TestCase):
 
         pvp.disable_valid_char_filter()
         with self.assertRaises(pvp.InvalidCharError):
-            r = pvp.read_pressure(s, 1, valid_char_filter=None)
+            pvp.read_pressure(s, 1, valid_char_filter=None)
 
         self.assertEqual(pvp.read_pressure(s, 1, valid_char_filter=True), 1.0)
 
         pvp.enable_valid_char_filter()
         with self.assertRaises(pvp.InvalidCharError):
-            r = pvp.read_pressure(s, 1, valid_char_filter=False)
+            pvp.read_pressure(s, 1, valid_char_filter=False)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
