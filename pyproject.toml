@@ -6,7 +6,7 @@ authors = [
 ]
 description = "Python interface to Pfeiffer vacuum gauges"
 readme = "README.md"
-requires-python = ">=3.6"
+requires-python = ">=3.9"
 license = {file = "LICENSE.txt"}
 classifiers = [
     "Programming Language :: Python :: 3",
