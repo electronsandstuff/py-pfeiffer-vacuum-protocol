@@ -3,12 +3,6 @@ name: Run python tests
 on:
   workflow_dispatch:
   pull_request:
-  schedule: 
-    - cron: '0 0 1 * *'
-  push:
-    branches:
-      - master
-      - migrate-setup-and-automation
 
 jobs:
   test:
@@ -18,14 +12,14 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest", "macos-latest", "windows-latest"]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
     steps:
     - uses: actions/checkout@v3
     - name: Setup python
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install package and dependencies
+    - name: Install package
       run: |
         pip install --upgrade pip
         pip install .

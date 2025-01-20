@@ -63,9 +63,11 @@ def _read_gauge_response(s, valid_char_filter=None):
         except UnicodeDecodeError:
             if valid_char_filter:
                 continue
-            raise InvalidCharError("Cannot decode character. This issue may sometimes be resolved by ignoring invalid "
-                                   "characters. Enable the filter globally by running the function "
-                                   "`pfeiffer_vacuum_protocol.enable_valid_char_filter()` after the import statement.")
+            raise InvalidCharError(
+                "Cannot decode character. This issue may sometimes be resolved by ignoring invalid "
+                "characters. Enable the filter globally by running the function "
+                "`pfeiffer_vacuum_protocol.enable_valid_char_filter()` after the import statement."
+            )
 
         if c == b"\r":
             break
